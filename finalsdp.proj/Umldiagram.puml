@@ -1,0 +1,84 @@
+@startuml
+
+class MultimediaPlayer {
+  - instance: MultimediaPlayer
+  + getInstance(): MultimediaPlayer
+  + play(file: String): void
+}
+
+interface PlayStrategy {
+  + play(file: String): void
+}
+
+class AudioPlayStrategy {
+  + play(file: String): void
+}
+
+class VideoPlayStrategy {
+  + play(file: String): void
+}
+
+interface AdvancedMediaPlayer {
+  + playVideo(file: String): void
+  + playAudio(file: String): void
+}
+
+class VLCPlayer {
+  + playVideo(file: String): void
+  + playAudio(file: String): void
+}
+
+class VLCPlayerAdapter {
+  + play(file: String): void
+}
+
+class MultimediaDecorator {
+  - playStrategy: PlayStrategy
+  + play(file: String): void
+}
+
+class LoopingDecorator {
+  + play(file: String): void
+}
+
+interface Observer {
+  + update(message: String): void
+}
+
+class Subject {
+  - observers: List<Observer>
+  + addObserver(observer: Observer): void
+  + notifyObservers(message: String): void
+}
+
+class MultimediaPlayerObserver {
+  + update(message: String): void
+}
+
+interface MultimediaFactory {
+  + createPlayer(): PlayStrategy
+}
+
+class AudioPlayerFactory {
+  + createPlayer(): PlayStrategy
+}
+
+class VideoPlayerFactory {
+  + createPlayer(): PlayStrategy
+}
+
+MultimediaPlayer --|> Singleton
+MultimediaPlayer ..> PlayStrategy
+PlayStrategy <|.. AudioPlayStrategy
+PlayStrategy <|.. VideoPlayStrategy
+AdvancedMediaPlayer <|.. VLCPlayer
+AdvancedMediaPlayer <|.. VLCPlayerAdapter
+MultimediaDecorator <|.. LoopingDecorator
+MultimediaDecorator - PlayStrategy
+Subject ..> Observer
+Subject - observers: List<Observer>
+MultimediaPlayerObserver --|> Observer
+MultimediaFactory <|.. AudioPlayerFactory
+MultimediaFactory <|.. VideoPlayerFactory
+
+@enduml
